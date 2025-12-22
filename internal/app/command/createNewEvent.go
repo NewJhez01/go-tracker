@@ -1,6 +1,9 @@
 package command
 
-import domain "github.com/NewJhez01/go-tracker/internal/domain/event"
+import (
+	domain "github.com/NewJhez01/go-tracker/internal/domain/event"
+	"github.com/NewJhez01/go-tracker/internal/repository"
+)
 
 type CreateNewEventDto struct {
 	UserID      int64
@@ -9,11 +12,16 @@ type CreateNewEventDto struct {
 }
 
 func PersistNewEvent(c *CreateNewEventDto) error {
+	repo := repository.EventsRepoStruct{}
+
 	if c.Description == nil {
-		domain.CreateEventWithoutDescription(c.UserID, c.Headline)
+		model := domain.CreateEventWithoutDescription(c.UserID, c.Headline)
+		repo.PersistNewEventWithoutDescription(&model)
+		return nil
 	}
 
-	domain.CreateEvent(c.UserID, c.Headline, *c.Description)
+	model := domain.CreateEvent(c.UserID, c.Headline, *c.Description)
+	repo.PersistNewEvent(&model)
 
 	return nil
 }
