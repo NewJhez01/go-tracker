@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/NewJhez01/go-tracker/cmd/routing"
@@ -14,4 +15,7 @@ func main() {
 		eventhandlers.CreateNewEventHandler{},
 	}
 	routing.RegisterEvents(mux, &appRouter)
+	if err := http.ListenAndServe(":8080", mux); err != nil {
+		fmt.Print("fatal")
+	}
 }
