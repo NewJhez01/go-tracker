@@ -30,7 +30,7 @@ func (c CreateNewEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	b := createNewEventHandlerBody{}
 	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
-		fmt.Println("work in progress")
+		fmt.Println("failed to parse response to body")
 	}
 
 	d := command.CreateNewEventDto{
@@ -40,8 +40,6 @@ func (c CreateNewEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 
 	if err := command.PersistNewEvent(&d); err != nil {
-		fmt.Println("work in progress")
+		fmt.Println("failed to persist event")
 	}
-
-	fmt.Println("success")
 }

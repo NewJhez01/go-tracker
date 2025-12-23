@@ -9,9 +9,11 @@ import (
 type EventsRepoStruct struct{}
 
 func (e EventsRepoStruct) PersistNewEvent(d *domain.Event) {
-	fmt.Printf("endpoint hit successfully with data %s", d.Headline)
+	s := fmt.Sprintf("endpoint hit successfully with data headline: %s and desc: %s", d.Headline, d.Description)
+	fmt.Println(s)
 }
 
 func (e EventsRepoStruct) PersistNewEventWithoutDescription(d *domain.EventWithoutDescription) {
-	fmt.Printf("endpoint hit successfully with data %s", d.Headline)
+	s := fmt.Sprintf("endpoint hit successfully with data with headline %s ", d.Headline)
+	fmt.Println(s)
 }
