@@ -25,23 +25,21 @@ func (c CreateNewEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	intID, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
-		fmt.Sprintf("failed to parse int from user id: %s", userID)
+		fmt.Printf("failed to parse int from user id: %s", userID)
 	}
 
 	b := createNewEventHandlerBody{}
 	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
-		fmt.Println("work in progress")
+		fmt.Println("failed to parse response to body")
 	}
 
 	d := command.CreateNewEventDto{
-		intID,
-		b.Headline,
-		b.Description,
+		UserID:      intID,
+		Headline:    b.Headline,
+		Description: b.Description,
 	}
 
 	if err := command.PersistNewEvent(&d); err != nil {
-		fmt.Println("work in progress")
+		fmt.Println("failed to persist event")
 	}
-
-	fmt.Println("success")
 }

@@ -1,22 +1,19 @@
 package repository
 
 import (
-	"errors"
+	"fmt"
 
 	domain "github.com/NewJhez01/go-tracker/internal/domain/event"
 )
 
-type eventsRepo interface {
-	persistNewEvent(*domain.Event) error
-	persistNewEventWithoutDescription(*domain.Event) error
+type EventsRepoStruct struct{}
+
+func (e EventsRepoStruct) PersistNewEvent(d *domain.Event) {
+	s := fmt.Sprintf("endpoint hit successfully with data headline: %s and desc: %s", d.Headline, d.Description)
+	fmt.Println(s)
 }
 
-type eventsRepoStruct struct{}
-
-func (e eventsRepoStruct) persistNewEvent(d *domain.Event) error {
-	return errors.New("work in progress")
-}
-
-func (e eventsRepoStruct) persistNewEventWithoutDescription(d *domain.Event) error {
-	return errors.New("work in progress")
+func (e EventsRepoStruct) PersistNewEventWithoutDescription(d *domain.EventWithoutDescription) {
+	s := fmt.Sprintf("endpoint hit successfully with data with headline %s ", d.Headline)
+	fmt.Println(s)
 }
