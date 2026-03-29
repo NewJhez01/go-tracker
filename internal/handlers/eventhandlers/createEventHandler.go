@@ -3,9 +3,9 @@ package eventhandlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/NewJhez01/go-tracker/internal/app/command"
+	"github.com/NewJhez01/go-tracker/internal/handlers/helpers"
 )
 
 type CreateNewEventHandler struct{}
@@ -16,16 +16,11 @@ type createNewEventHandlerBody struct {
 }
 
 func (c CreateNewEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	userID := r.PathValue("user_id")
+	userId := r.PathValue("user_id")
 
-	if userID == "" {
-		http.Error(w, "failed to fetch user from path", http.StatusBadRequest)
-		return
-	}
-
-	intID, err := strconv.ParseInt(userID, 10, 64)
+	intId, err := helpers.ParseId(userId)
 	if err != nil {
-		http.Error(w, "failed to parse id from request", http.StatusBadRequest)
+		http.Error(w, "invalid user id given", http.StatusBadRequest)
 		return
 	}
 
@@ -36,7 +31,7 @@ func (c CreateNewEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 
 	d := command.CreateNewEventDto{
-		UserID:      intID,
+		UserId:      intId,
 		Headline:    b.Headline,
 		Description: b.Description,
 	}
