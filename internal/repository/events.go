@@ -17,3 +17,7 @@ func (e EventsRepoStruct) PersistNewEventWithoutDescription(d *domain.EventWitho
 	s := fmt.Sprintf("endpoint hit successfully with data with headline %s ", d.Headline)
 	fmt.Println(s)
 }
+
+func (e EventsRepoStruct) FetchAllEventsForUser(userId int64) string {
+	return "hello world"
+}

@@ -12,9 +12,10 @@ import (
 func main() {
 	mux := http.NewServeMux()
 	appRouter := handlers.AppRoutes{
-		eventhandlers.CreateNewEventHandler{},
+		CreateEvents: eventhandlers.CreateNewEventHandler{},
+		ReadEvents:   eventhandlers.ReadAllEventHandler{},
 	}
-	routing.RegisterEvents(mux, &appRouter)
+	routing.RegisterEventHandlers(mux, &appRouter)
 	if err := http.ListenAndServe(":8080", mux); err != nil {
 		fmt.Print("fatal")
 	}

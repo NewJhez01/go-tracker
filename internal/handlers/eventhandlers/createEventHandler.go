@@ -2,11 +2,10 @@ package eventhandlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/NewJhez01/go-tracker/internal/app/command"
+	"github.com/NewJhez01/go-tracker/internal/handlers/helpers"
 )
 
 type CreateNewEventHandler struct{}
@@ -17,29 +16,31 @@ type createNewEventHandlerBody struct {
 }
 
 func (c CreateNewEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	userID := r.PathValue("user_id")
+	userId := r.PathValue("user_id")
 
-	if userID == "" {
-		fmt.Println("failed to fetch user id from path")
-	}
-
-	intID, err := strconv.ParseInt(userID, 10, 64)
+	intId, err := helpers.ParseId(userId)
 	if err != nil {
-		fmt.Printf("failed to parse int from user id: %s", userID)
+		http.Error(w, "invalid user id given", http.StatusBadRequest)
+		return
 	}
 
 	b := createNewEventHandlerBody{}
 	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
-		fmt.Println("failed to parse response to body")
+		http.Error(w, "request body incorrect", http.StatusBadRequest)
+		return
 	}
 
 	d := command.CreateNewEventDto{
-		UserID:      intID,
+		UserId:      intId,
 		Headline:    b.Headline,
 		Description: b.Description,
 	}
 
 	if err := command.PersistNewEvent(&d); err != nil {
-		fmt.Println("failed to persist event")
+		http.Error(w, "failed to persist the event", http.StatusBadRequest)
+		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 }
