@@ -6,4 +6,5 @@ import (
 
 type AppRoutes struct {
 	CreateEvents http.Handler
+	ReadEvents   http.Handler
 }
