@@ -2,7 +2,6 @@ package eventhandlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -20,17 +19,20 @@ func (c CreateNewEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	userID := r.PathValue("user_id")
 
 	if userID == "" {
-		fmt.Println("failed to fetch user id from path")
+		http.Error(w, "failed to fetch user from path", http.StatusBadRequest)
+		return
 	}
 
 	intID, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {
-		fmt.Printf("failed to parse int from user id: %s", userID)
+		http.Error(w, "failed to parse id from request", http.StatusBadRequest)
+		return
 	}
 
 	b := createNewEventHandlerBody{}
 	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
-		fmt.Println("failed to parse response to body")
+		http.Error(w, "request body incorrect", http.StatusBadRequest)
+		return
 	}
 
 	d := command.CreateNewEventDto{
@@ -40,6 +42,10 @@ func (c CreateNewEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	}
 
 	if err := command.PersistNewEvent(&d); err != nil {
-		fmt.Println("failed to persist event")
+		http.Error(w, "failed to persist the event", http.StatusBadRequest)
+		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 }
